@@ -9,15 +9,9 @@ namespace dnd_assistant.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    public class UserController : TemplateController
+    public class UserController(MyDbContext context, IHttpContextAccessor contextAccessor, ILogger<TemplateController> logger, IPasswordHasher<User> passwordHasher) : TemplateController(context, contextAccessor, logger)
     {
-
-        public UserController(MyDbContext context, IHttpContextAccessor contextAccessor, ILogger<TemplateController> logger, IPasswordHasher<User> passwordHasher) : base(context, contextAccessor, logger)
-        {
-            this.passwordHasher = passwordHasher;
-        }
-
-        private readonly IPasswordHasher<User> passwordHasher;
+        private readonly IPasswordHasher<User> passwordHasher = passwordHasher;
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserDTO userDTO)
@@ -27,12 +21,12 @@ namespace dnd_assistant.Controllers
             if (!ModelState.IsValid)
             {
                 var validationErrors = ModelState
-                    .Where(fieldState => fieldState.Value.Errors.Count > 0)
+                    .Where(fieldState => fieldState.Value!.Errors.Count > 0)
                     .ToDictionary(
                         fieldState => fieldState.Key,
-                        fieldState => fieldState.Value.Errors
+                        fieldState => fieldState.Value!.Errors
                             .Select(error => error.ErrorMessage)
-                            .ToArray()
+                            .ToList()
                     );
 
                 return BadRequest(new
@@ -42,14 +36,14 @@ namespace dnd_assistant.Controllers
                 });
             }
 
-            User existingUser = await context.Users.FirstOrDefaultAsync(findUser => findUser.Email == userDTO.Email);
+            User? existingUser = await context.Users.FirstOrDefaultAsync(findUser => findUser.Email == userDTO.Email);
 
             if (existingUser != null) return Conflict(new
             {
                 response = "Duplicate Entries"
             });
 
-            User newUser = new User
+            User newUser = new()
             {
                 Name = userDTO.Name,
                 Email = userDTO.Email,
