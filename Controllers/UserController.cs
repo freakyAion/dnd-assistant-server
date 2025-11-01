@@ -75,11 +75,115 @@ namespace dnd_assistant.Controllers
 
         }
 
-        [HttpGet("{id}")]
-        //public async Task<IActionResult> GetByID(Guid ID)
-        public void GetByID()
+        [HttpGet("{ID:guid}")]
+        public async Task<IActionResult> GetByID([FromRoute] Guid ID)
         {
+            LogContext(nameof(GetByID));
 
+            if (ID == Guid.Empty) return BadRequest(new { response = "Empty ID" });
+
+            User? user = await context.Users.FirstOrDefaultAsync(user => user.ID == ID);
+
+            if (user == null) return NotFound(new
+            {
+                response = "User not found"
+            });
+
+            ReturnUserDTO returnedUser = new()
+            {
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role
+            };
+
+            return Ok(new
+            {
+                response = "Success",
+                user = returnedUser
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] bool? all, [FromQuery] string? email, [FromQuery] string? name)
+        {
+            LogContext(nameof(Get));
+
+            if (all == true)
+            {
+                // TODO?: Add a check for credentials
+
+                List<User> users = await context.Users.ToListAsync();
+                List<ReturnUserDTO> returnedUsers = [];
+                foreach (var user in users)
+                {
+                    returnedUsers.Add(new ReturnUserDTO
+                    {
+                        Name = user.Name,
+                        Email = user.Email,
+                        Role = user.Role
+                    });
+                }
+
+                return Ok(new
+                {
+                    response = "Success",
+                    count = returnedUsers.Count,
+                    users = returnedUsers
+                });
+            }
+            else if (!string.IsNullOrEmpty(email))
+            {
+                User? user = await context.Users.FirstOrDefaultAsync(user => user.Email == email);
+
+                if (user == null) return NotFound(new
+                {
+                    response = "User not found"
+                });
+
+                ReturnUserDTO returnedUser = new()
+                {
+                    Name = user.Name,
+                    Email = user.Email,
+                    Role = user.Role
+                };
+
+                return Ok(new
+                {
+                    response = "Success",
+                    user = returnedUser
+                });
+            }
+            else if (!string.IsNullOrWhiteSpace(name))
+            {
+                List<User> users = await context.Users
+                    .Where(user => user.Name == name)
+                    .ToListAsync();
+                List<ReturnUserDTO> returnedUsers = [];
+
+                foreach (var user in users)
+                {
+                    returnedUsers.Add(new ReturnUserDTO
+                    {
+                        Name = user.Name,
+                        Email = user.Email,
+                        Role = user.Role
+                    });
+                }
+
+                return Ok(new
+                {
+                    response = "Success",
+                    count = returnedUsers.Count,
+                    users = returnedUsers
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    response = "All query parametres are empty"
+                });
+            }
         }
     }
 }
