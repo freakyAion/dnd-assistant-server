@@ -20,6 +20,18 @@ namespace dnd_assistant
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddSingleton<JWTService>(sp =>
+            {
+                var configuration = sp.GetRequiredService<IConfiguration>();
+
+                return new JWTService(
+                    key: configuration["Jwt:Key"]!,
+                    issuer: configuration["Jwt:Issuer"]!,
+                    audience: configuration["Jwt:Audience"]!
+                );
+            });
+
             builder.Services.AddDbContext<MyDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
