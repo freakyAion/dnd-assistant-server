@@ -40,4 +40,17 @@ namespace dnd_assistant.DTOs
         [EnumDataType(typeof(UserRole))]
         public UserRole Role { get; set; } = UserRole.Player;
     }
+
+    public class LoginDTO
+    {
+        [Required]
+        [EmailAddress]
+        [MaxLength(100)]
+        public required string Email { get; set; }
+
+        [Required]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
+        [MaxLength(100, ErrorMessage = "Password cannot exceed 100 characters.")]
+        public required string Password { get; set; }
+    }
 }

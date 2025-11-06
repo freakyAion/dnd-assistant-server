@@ -23,6 +23,8 @@ namespace dnd_assistant.Models
 
         [Required]
         public UserRole Role { get; set; } = UserRole.Player;
+
+
     }
 
     public enum UserRole

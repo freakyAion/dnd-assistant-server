@@ -7,6 +7,7 @@ namespace dnd_assistant.DB
     public class MyDbContext(DbContextOptions<MyDbContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public override int SaveChanges()
         {
