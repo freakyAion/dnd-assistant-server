@@ -12,6 +12,8 @@ namespace dnd_assistant.Controllers
         [NonAction]
         public void LogContext(string requestName)
         {
+            // TODO: Add logging via a .txt file
+
             var method = contextAccessor.HttpContext?.Request?.Method;
             var headers = contextAccessor.HttpContext?.Request?.Headers;
             var requestPath = contextAccessor.HttpContext?.Request?.Path;

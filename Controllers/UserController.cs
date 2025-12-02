@@ -188,16 +188,30 @@ namespace dnd_assistant.Controllers
             }
         }
 
-        // TODO: Add Update PUT
+        [HttpPatch]
+        public IActionResult Edit()
+        {
+            return NotFound();
+        }
 
-        // TODO: Add Delete
+        [HttpPut]
+        public IActionResult Replace()
+        {
+            return NotFound();
+        }
+
+        [HttpDelete]
+        public IActionResult Remove()
+        {
+            return NotFound();
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO userDTO)
         {
             LogContext(nameof(Login));
 
-            /*if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var validationErrors = ModelState
                     .Where(fieldState => fieldState.Value!.Errors.Count > 0)
@@ -213,7 +227,7 @@ namespace dnd_assistant.Controllers
                     response = "Validation Error",
                     errors = validationErrors
                 });
-            }*/
+            }
 
             User? user = await context.Users.FirstOrDefaultAsync(findUser => findUser.Email == userDTO.Email);
 

@@ -2,8 +2,11 @@ using dnd_assistant.DB;
 using dnd_assistant.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 // using dnd_assistant.Data;
 
@@ -45,6 +48,46 @@ namespace dnd_assistant
                           .AllowCredentials();
                 });
             });
+
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy("Admin", policy => policy.RequireRole("Admin"))
+                .AddPolicy("AdminOrModerator", policy => policy.RequireRole("Admin", "Moderator"))
+
+                .AddPolicy("Self", policy => policy.RequireAssertion(context =>
+                {
+                    var httpContext = (context.Resource as Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext)?.HttpContext ?? context.Resource as HttpContext;
+
+                    if (httpContext == null) return false;
+
+                    if (!httpContext.Request.RouteValues.TryGetValue("id", out var routeIdObj)) return false;
+
+                    string? routeId = routeIdObj?.ToString();
+
+                    var userId = context.User.FindFirstValue("sub") ?? context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                    return routeId != null && userId == routeId;
+                }))
+
+                .AddPolicy("AdminOrSelf", policy =>
+                policy.RequireAssertion(context =>
+                {
+                    var role = context.User.FindFirstValue(ClaimTypes.Role);
+                    if (role == "Admin" || role == "Moderator") return true;
+
+                    var mvcContext = context.Resource as AuthorizationFilterContext;
+                    var httpContext = mvcContext?.HttpContext;
+
+                    if (httpContext == null) return false;
+
+                    if (!httpContext.Request.RouteValues.TryGetValue("id", out var routeIdObj)) return false;
+
+                    string? routeId = routeIdObj?.ToString();
+                    if (string.IsNullOrEmpty(routeId)) return false;
+
+                    var userId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sub ?? context.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                    return string.Equals(userId, routeId, StringComparison.OrdinalIgnoreCase);
+                }));
 
             builder.Services.AddAuthentication(options =>
             {
