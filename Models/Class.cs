@@ -10,18 +10,31 @@ namespace dnd_assistant.Models
     {
         [Required]
         [MaxLength(255)]
-        [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$", ErrorMessage = "Name must be 3–255 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
+        [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$")]
         public required string Name { get; set; }
 
-        public string? Description { get; set; } = "TODO: JSON Handling via JSONB column";
+        [Column(TypeName = "jsonb")]
+        public string? Description { get; set; }
 
         [Required]
         public DieType HitDie { get; set; }
 
-        [Required]
+        [Range(1, 6)]
         public int SkillProficienciesAmount { get; set; }
 
-        [Required]
+        [Range(1, 20)]
         public int SubClassUnlockingLevel { get; set; }
+
+        public ArmourProficiency ArmourProficiencies { get; set; } = ArmourProficiency.None;
+        public WeaponProficiency WeaponProficiencies { get; set; } = WeaponProficiency.None;
+        public AbilityScore SavingThrowProficiencies { get; set; } = AbilityScore.None;
+
+        public AbilityScore? SpellcastingAbility { get; set; }
+
+        public ICollection<ClassFeature> Features { get; set; } = [];
+        public ICollection<ClassWeaponProficiency> SpecificWeaponProficiencies { get; set; } = [];
+
+        public ICollection<ClassSkillPool> SkillPool { get; set; } = [];
+        public ICollection<ClassSpellSlotProgression> SpellSlotProgression { get; set; } = [];
     }
 }

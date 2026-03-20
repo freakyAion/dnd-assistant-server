@@ -42,7 +42,7 @@ namespace dnd_assistant
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000")
+                    policy.WithOrigins("http://localhost:5173")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -111,10 +111,16 @@ namespace dnd_assistant
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+                db.Database.Migrate();
+                //ClassSeedData.Seed(db);
+            }
+
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
             app.UseStaticFiles();
-
 
             if (app.Environment.IsDevelopment())
             {

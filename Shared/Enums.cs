@@ -26,5 +26,57 @@
             NeutralEvil,
             ChaoticEvil
         }
+
+        [Flags]
+        public enum ArmourProficiency
+        {
+            None = 0,
+            Light = 1,
+            Medium = 2,
+            Heavy = 4,
+            Shield = 8
+        }
+
+        [Flags]
+        public enum WeaponProficiency
+        {
+            None = 0,
+            Simple = 1,
+            Martial = 2
+        }
+
+        [Flags]
+        public enum AbilityScore
+        {
+            None = 0,
+            Strength = 1,
+            Dexterity = 2,
+            Constitution = 4,
+            Intelligence = 8,
+            Wisdom = 16,
+            Charisma = 32
+        }
+
+        public enum Skill
+        {
+            Acrobatics,
+            AnimalHandling,
+            Arcana,
+            Athletics,
+            Deception,
+            History,
+            Insight,
+            Intimidation,
+            Investigation,
+            Medicine,
+            Nature,
+            Perception,
+            Performance,
+            Persuasion,
+            Religion,
+            SleightOfHand,
+            Stealth,
+            Survival
+        }
     }
 }

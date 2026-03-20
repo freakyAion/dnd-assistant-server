@@ -12,7 +12,8 @@ namespace dnd_assistant.Models
         [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$", ErrorMessage = "Name must be 3–255 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
         public required string Name { get; set; }
 
-        public string? Description { get; set; } = "TODO: JSON Handling via JSONB column";
+        [Column(TypeName = "jsonb")]
+        public string? Description { get; set; }
 
         [Required]
         [Range(0, 20, ErrorMessage = "Value out of range.")]

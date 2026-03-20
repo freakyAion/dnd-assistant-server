@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static dnd_assistant.Shared.Enums;
-
 namespace dnd_assistant.Models
 {
     [Table("Characters")]
@@ -10,7 +9,6 @@ namespace dnd_assistant.Models
     {
         [Required]
         public Guid UserID { get; set; }
-
         public Class User { get; set; } = null!;
 
         [Required]
@@ -24,7 +22,6 @@ namespace dnd_assistant.Models
 
         [Required]
         public Guid StartingClassID { get; set; }
-
         public Class StartingClass { get; set; } = null!;
 
         public string? Ideals { get; set; } = "TODO: JSON Handling via JSONB column";
@@ -32,25 +29,25 @@ namespace dnd_assistant.Models
         public string? Flaws { get; set; } = "TODO: JSON Handling via JSONB column";
 
         [MaxLength(31)]
-        [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$", ErrorMessage = "Name must be 3–255 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
+        [RegularExpression(@"^[A-Za-z0-9_\- ]{1,31}$", ErrorMessage = "Sex must be 1–31 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
         public string? Sex { get; set; } = string.Empty;
 
         [MaxLength(31)]
-        [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$", ErrorMessage = "Name must be 3–255 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
-        public string? Complexion { get; set; } = string.Empty; // Цвет кожи
+        [RegularExpression(@"^[A-Za-z0-9_\- ]{1,31}$", ErrorMessage = "Complexion must be 1–31 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
+        public string? Complexion { get; set; } = string.Empty;
 
         [MaxLength(31)]
-        [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$", ErrorMessage = "Name must be 3–255 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
+        [RegularExpression(@"^[A-Za-z0-9_\- ]{1,31}$", ErrorMessage = "Hair colour must be 1–31 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
         public string? HairColour { get; set; } = string.Empty;
 
         [MaxLength(31)]
-        [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$", ErrorMessage = "Name must be 3–255 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
+        [RegularExpression(@"^[A-Za-z0-9_\- ]{1,31}$", ErrorMessage = "Eye colour must be 1–31 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
         public string? EyeColour { get; set; } = string.Empty;
 
-        public Alignment? alignment { get; set; } = null!;
+        public Alignment? Alignment { get; set; } = null!;
 
-        [MaxLength(31)]
-        [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$", ErrorMessage = "Name must be 3–255 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
+        [MaxLength(63)]
+        [RegularExpression(@"^[A-Za-z0-9_\- ]{1,63}$", ErrorMessage = "Religion must be 1–63 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
         public string? Religion { get; set; } = string.Empty;
 
         [Range(0d, 999d)]
@@ -60,7 +57,7 @@ namespace dnd_assistant.Models
         public double? Weight { get; set; } = null!;
 
         [MaxLength(31)]
-        [RegularExpression(@"^[A-Za-z0-9_\- ]{3,255}$", ErrorMessage = "Name must be 3–255 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
+        [RegularExpression(@"^[A-Za-z0-9_\- ]{1,31}$", ErrorMessage = "Age must be 1–31 characters and contain only letters, numbers, spaces, underscores or hyphens.")]
         public string? Age { get; set; } = null!;
 
         public Guid RaceID = Guid.Empty;
@@ -70,6 +67,5 @@ namespace dnd_assistant.Models
         public string? Temper { get; set; } = "TODO: JSON Handling via JSONB column";
         public string? Backstory { get; set; } = "TODO: JSON Handling via JSONB column";
         public string? Statuseffects { get; set; } = "TODO: JSON Handling via JSONB column";
-
     }
 }

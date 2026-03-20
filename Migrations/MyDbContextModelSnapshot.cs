@@ -31,6 +31,9 @@ namespace dnd_assistant.Migrations
                         .HasMaxLength(31)
                         .HasColumnType("character varying(31)");
 
+                    b.Property<int?>("Alignment")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Backstory")
                         .HasColumnType("text");
 
@@ -76,8 +79,8 @@ namespace dnd_assistant.Migrations
                         .HasColumnType("character varying(255)");
 
                     b.Property<string>("Religion")
-                        .HasMaxLength(31)
-                        .HasColumnType("character varying(31)");
+                        .HasMaxLength(63)
+                        .HasColumnType("character varying(63)");
 
                     b.Property<string>("Sex")
                         .HasMaxLength(31)
@@ -98,9 +101,6 @@ namespace dnd_assistant.Migrations
                     b.Property<double?>("Weight")
                         .HasColumnType("double precision");
 
-                    b.Property<int?>("alignment")
-                        .HasColumnType("integer");
-
                     b.HasKey("ID");
 
                     b.HasIndex("StartingClassID");
@@ -115,11 +115,14 @@ namespace dnd_assistant.Migrations
                     b.Property<Guid>("ID")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("ArmourProficiencies")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasColumnType("jsonb");
 
                     b.Property<int>("HitDie")
                         .HasColumnType("integer");
@@ -132,43 +135,24 @@ namespace dnd_assistant.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<int>("SavingThrowProficiencies")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SkillProficienciesAmount")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SpellcastingAbility")
                         .HasColumnType("integer");
 
                     b.Property<int>("SubClassUnlockingLevel")
                         .HasColumnType("integer");
 
+                    b.Property<int>("WeaponProficiencies")
+                        .HasColumnType("integer");
+
                     b.HasKey("ID");
 
                     b.ToTable("Classes");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.ClassArmourProficiency", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("HeavyProficiency")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("LightProficiency")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("MediumProficiency")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("ShieldProficiency")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("ClassArmourProficiencies");
                 });
 
             modelBuilder.Entity("dnd_assistant.Models.ClassFeature", b =>
@@ -183,7 +167,7 @@ namespace dnd_assistant.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasColumnType("jsonb");
 
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -201,6 +185,121 @@ namespace dnd_assistant.Migrations
                     b.HasIndex("ClassID");
 
                     b.ToTable("ClassFeatures");
+                });
+
+            modelBuilder.Entity("dnd_assistant.Models.ClassSkillPool", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClassID")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Skill")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ClassID");
+
+                    b.ToTable("ClassSkillPool");
+                });
+
+            modelBuilder.Entity("dnd_assistant.Models.ClassSpellSlotProgression", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("CantripsKnown")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ClassID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ClassLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("PactSlotCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PactSlotLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot1")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot2")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot3")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot4")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot5")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot6")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot7")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot8")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Slot9")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SpellsKnown")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ClassID");
+
+                    b.ToTable("ClassSpellSlotProgressions");
+                });
+
+            modelBuilder.Entity("dnd_assistant.Models.ClassWeaponProficiency", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClassID")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Weapon")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("WeaponID")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ClassID");
+
+                    b.ToTable("ClassWeaponProficiencies");
                 });
 
             modelBuilder.Entity("dnd_assistant.Models.RefreshToken", b =>
@@ -309,7 +408,40 @@ namespace dnd_assistant.Migrations
             modelBuilder.Entity("dnd_assistant.Models.ClassFeature", b =>
                 {
                     b.HasOne("dnd_assistant.Models.Class", "Class")
-                        .WithMany()
+                        .WithMany("Features")
+                        .HasForeignKey("ClassID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+                });
+
+            modelBuilder.Entity("dnd_assistant.Models.ClassSkillPool", b =>
+                {
+                    b.HasOne("dnd_assistant.Models.Class", "Class")
+                        .WithMany("SkillPool")
+                        .HasForeignKey("ClassID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+                });
+
+            modelBuilder.Entity("dnd_assistant.Models.ClassSpellSlotProgression", b =>
+                {
+                    b.HasOne("dnd_assistant.Models.Class", "Class")
+                        .WithMany("SpellSlotProgression")
+                        .HasForeignKey("ClassID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+                });
+
+            modelBuilder.Entity("dnd_assistant.Models.ClassWeaponProficiency", b =>
+                {
+                    b.HasOne("dnd_assistant.Models.Class", "Class")
+                        .WithMany("SpecificWeaponProficiencies")
                         .HasForeignKey("ClassID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -326,6 +458,17 @@ namespace dnd_assistant.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("dnd_assistant.Models.Class", b =>
+                {
+                    b.Navigation("Features");
+
+                    b.Navigation("SkillPool");
+
+                    b.Navigation("SpecificWeaponProficiencies");
+
+                    b.Navigation("SpellSlotProgression");
                 });
 #pragma warning restore 612, 618
         }
