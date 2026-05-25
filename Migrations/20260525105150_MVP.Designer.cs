@@ -3,6 +3,7 @@ using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using dnd_assistant.DB;
@@ -12,9 +13,11 @@ using dnd_assistant.DB;
 namespace dnd_assistant.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260525105150_MVP")]
+    partial class MVP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,87 +62,6 @@ namespace dnd_assistant.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Backgrounds");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.Campaign", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatorID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("jsonb");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("Pitch")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<int>("SessionNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("System")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<Guid>("WorldID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("CreatorID");
-
-                    b.HasIndex("WorldID");
-
-                    b.ToTable("Campaigns");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.CampaignAccess", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CampaignID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("UserID");
-
-                    b.HasIndex("CampaignID", "UserID")
-                        .IsUnique();
-
-                    b.ToTable("CampaignAccess");
                 });
 
             modelBuilder.Entity("dnd_assistant.Models.Character", b =>
@@ -422,49 +344,6 @@ namespace dnd_assistant.Migrations
                     b.ToTable("ClassWeaponProficiencies");
                 });
 
-            modelBuilder.Entity("dnd_assistant.Models.Event", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatorID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("jsonb");
-
-                    b.Property<bool>("IsSecret")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("Pitch")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Time")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<Guid>("WorldID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("WorldID");
-
-                    b.ToTable("Events");
-                });
-
             modelBuilder.Entity("dnd_assistant.Models.Item", b =>
                 {
                     b.Property<Guid>("ID")
@@ -515,159 +394,6 @@ namespace dnd_assistant.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("dnd_assistant.Models.Location", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatorID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<Guid?>("ParentLocationID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Pitch")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Type")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<Guid>("WorldID")
-                        .HasColumnType("uuid");
-
-                    b.Property<double?>("X")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("Y")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ParentLocationID");
-
-                    b.HasIndex("WorldID");
-
-                    b.ToTable("Locations");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.NPC", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatorID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("jsonb");
-
-                    b.Property<bool>("IsSecret")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LocationID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<Guid?>("OrganisationID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Pitch")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<Guid>("SpeciesID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("WorldID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("LocationID");
-
-                    b.HasIndex("OrganisationID");
-
-                    b.HasIndex("SpeciesID");
-
-                    b.HasIndex("WorldID");
-
-                    b.ToTable("NPCs");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.Organisation", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatorID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("jsonb");
-
-                    b.Property<bool>("IsSecret")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LocationID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("Pitch")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Type")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<Guid>("WorldID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("LocationID");
-
-                    b.HasIndex("WorldID");
-
-                    b.ToTable("Organisations");
-                });
-
             modelBuilder.Entity("dnd_assistant.Models.RefreshToken", b =>
                 {
                     b.Property<Guid>("ID")
@@ -716,49 +442,6 @@ namespace dnd_assistant.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("RefreshTokens");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.Session", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CampaignID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatorID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("jsonb");
-
-                    b.Property<bool>("IsSecret")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Pitch")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("CampaignID", "Order")
-                        .IsUnique();
-
-                    b.ToTable("Sessions");
                 });
 
             modelBuilder.Entity("dnd_assistant.Models.Species", b =>
@@ -925,110 +608,6 @@ namespace dnd_assistant.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("dnd_assistant.Models.World", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("jsonb");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<Guid>("OwnerID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Pitch")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("OwnerID");
-
-                    b.ToTable("Worlds");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.WorldAccess", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("WorldID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("UserID");
-
-                    b.HasIndex("WorldID", "UserID")
-                        .IsUnique();
-
-                    b.ToTable("WorldAccess");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.Campaign", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dnd_assistant.Models.World", "World")
-                        .WithMany()
-                        .HasForeignKey("WorldID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Creator");
-
-                    b.Navigation("World");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.CampaignAccess", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.Campaign", "Campaign")
-                        .WithMany()
-                        .HasForeignKey("CampaignID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dnd_assistant.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Campaign");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("dnd_assistant.Models.Character", b =>
                 {
                     b.HasOne("dnd_assistant.Models.Class", "StartingClass")
@@ -1092,82 +671,6 @@ namespace dnd_assistant.Migrations
                     b.Navigation("Class");
                 });
 
-            modelBuilder.Entity("dnd_assistant.Models.Event", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.World", "World")
-                        .WithMany()
-                        .HasForeignKey("WorldID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("World");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.Location", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.Location", "ParentLocation")
-                        .WithMany()
-                        .HasForeignKey("ParentLocationID");
-
-                    b.HasOne("dnd_assistant.Models.World", "World")
-                        .WithMany()
-                        .HasForeignKey("WorldID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ParentLocation");
-
-                    b.Navigation("World");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.NPC", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationID");
-
-                    b.HasOne("dnd_assistant.Models.Organisation", "Organisation")
-                        .WithMany()
-                        .HasForeignKey("OrganisationID");
-
-                    b.HasOne("dnd_assistant.Models.Species", "Species")
-                        .WithMany()
-                        .HasForeignKey("SpeciesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dnd_assistant.Models.World", "World")
-                        .WithMany()
-                        .HasForeignKey("WorldID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Organisation");
-
-                    b.Navigation("Species");
-
-                    b.Navigation("World");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.Organisation", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationID");
-
-                    b.HasOne("dnd_assistant.Models.World", "World")
-                        .WithMany()
-                        .HasForeignKey("WorldID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-
-                    b.Navigation("World");
-                });
-
             modelBuilder.Entity("dnd_assistant.Models.RefreshToken", b =>
                 {
                     b.HasOne("dnd_assistant.Models.User", "User")
@@ -1179,17 +682,6 @@ namespace dnd_assistant.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("dnd_assistant.Models.Session", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.Campaign", "Campaign")
-                        .WithMany()
-                        .HasForeignKey("CampaignID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Campaign");
-                });
-
             modelBuilder.Entity("dnd_assistant.Models.SubSpecies", b =>
                 {
                     b.HasOne("dnd_assistant.Models.Species", "Species")
@@ -1199,36 +691,6 @@ namespace dnd_assistant.Migrations
                         .IsRequired();
 
                     b.Navigation("Species");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.World", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.WorldAccess", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dnd_assistant.Models.World", "World")
-                        .WithMany()
-                        .HasForeignKey("WorldID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-
-                    b.Navigation("World");
                 });
 
             modelBuilder.Entity("dnd_assistant.Models.Class", b =>

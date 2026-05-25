@@ -1,6 +1,7 @@
 ﻿using dnd_assistant.Abstract;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 
 namespace dnd_assistant.Models
 {
@@ -13,7 +14,7 @@ namespace dnd_assistant.Models
         public required string Name { get; set; }
 
         [Column(TypeName = "jsonb")]
-        public string? Description { get; set; }
+        public JsonElement? Description { get; set; }
 
         [Required]
         [Range(0, 20, ErrorMessage = "Value out of range.")]

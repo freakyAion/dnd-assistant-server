@@ -7,7 +7,7 @@ namespace dnd_assistant.Abstract
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public virtual T ID { get; set; }
+        public virtual T ID { get; set; } = default;
 
         public abstract T GetID();
     }

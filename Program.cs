@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 // using dnd_assistant.Data;
 
 namespace dnd_assistant
@@ -20,7 +21,12 @@ namespace dnd_assistant
 
             builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
+
+
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
 
