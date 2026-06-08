@@ -18,6 +18,9 @@ namespace dnd_assistant.DB
         public DbSet<Background> Backgrounds => Set<Background>();
         public DbSet<BackgroundFeature> BackgroundFeatures { get; set; }
         public DbSet<Models.Rule> Rules { get; set; }
+        public DbSet<Character> Characters { get; set; }
+        public DbSet<CharacterItem> CharacterItems { get; set; }
+        public DbSet<CharacterSpell> CharacterSpells { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -104,6 +107,33 @@ namespace dnd_assistant.DB
             {
                 entity.HasIndex(r => r.Slug).IsUnique();
                 entity.Property(r => r.Category).HasConversion<string>();
+            });
+
+            modelBuilder.Entity<Character>(entity =>
+            {
+                entity.HasIndex(c => c.UserID);
+                entity.PrimitiveCollection(c => c.CustomSkillProficiencies);
+                entity.PrimitiveCollection(c => c.ExpendedSpellSlots);
+            });
+
+            modelBuilder.Entity<CharacterItem>(entity =>
+            {
+                entity.HasIndex(ci => ci.CharacterID);
+
+                entity.HasOne(ci => ci.Character)
+                      .WithMany(c => c.Inventory)
+                      .HasForeignKey(ci => ci.CharacterID)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<CharacterSpell>(entity =>
+            {
+                entity.HasIndex(cs => cs.CharacterID);
+
+                entity.HasOne(cs => cs.Character)
+                      .WithMany(c => c.Spells)
+                      .HasForeignKey(cs => cs.CharacterID)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
         }
 
