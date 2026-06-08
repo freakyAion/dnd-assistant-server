@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace dnd_assistant.Abstract
 {
@@ -18,7 +19,9 @@ namespace dnd_assistant.Abstract
 
         public override Guid GetID() => ID;
 
+        [JsonIgnore]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [JsonIgnore]
         public DateTime LastUpdatedAt { get; set; } = DateTime.UtcNow;
 
         public void Touch()

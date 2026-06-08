@@ -5,7 +5,7 @@ namespace dnd_assistant.Controllers
 {
     [ApiController]
     [Route("api/serverstatus")]
-    public class ServerStatusController(MyDbContext context, IHttpContextAccessor contextAccessor, ILogger<TemplateController> logger) : TemplateController(context, contextAccessor, logger)
+    public class ServerStatusController(MyDbContext context, ILogger<TemplateController> logger) : TemplateController(context, logger)
     {
         [HttpGet]
         public IActionResult Get()

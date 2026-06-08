@@ -3,38 +3,35 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dnd_assistant.Controllers
 {
-    public class TemplateController : ControllerBase
+    [ApiController]
+    public abstract class TemplateController(MyDbContext context, ILogger<TemplateController> logger) : ControllerBase
     {
-        protected readonly IHttpContextAccessor contextAccessor;
-        protected readonly ILogger<TemplateController> logger;
-        protected readonly MyDbContext context;
+        protected readonly MyDbContext _context = context;
+        protected readonly ILogger<TemplateController> _logger = logger;
 
         [NonAction]
         public void LogContext(string requestName)
         {
-            // TODO: Add logging via a .txt file
+            // TODO: Add logging via a .txt file if necessary, 
+            // though standard ILogger handles file outputs cleanly via providers like Serilog.
 
-            var method = contextAccessor.HttpContext?.Request?.Method;
-            var headers = contextAccessor.HttpContext?.Request?.Headers;
-            var requestPath = contextAccessor.HttpContext?.Request?.Path;
-            var clientIp = contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+            var request = HttpContext.Request;
+            var connection = HttpContext.Connection;
 
-            var contentType = headers?["Content-Type"];
-            var userAgent = headers?["User-Agent"];
+            var method = request.Method;
+            var headers = request.Headers;
+            var requestPath = request.Path;
+            var clientIp = connection.RemoteIpAddress?.ToString();
 
-            logger.LogInformation(
-                $"{DateTime.Now} - {requestName}\n" +
-                $"Method: {method}, Content-Type: {contentType}\n" +
-                $"From: {requestPath}, {clientIp}, {userAgent}\n"
+            var contentType = headers["Content-Type"];
+            var userAgent = headers["User-Agent"];
+
+            _logger.LogInformation(
+                "{Timestamp} - {RequestName}\n" +
+                "Method: {Method}, Content-Type: {ContentType}\n" +
+                "From: {Path}, {Ip}, {UserAgent}\n",
+                DateTime.UtcNow, requestName, method, contentType, requestPath, clientIp, userAgent
             );
-
-        }
-
-        public TemplateController(MyDbContext context, IHttpContextAccessor contextAccessor, ILogger<TemplateController> logger)
-        {
-            this.context = context;
-            this.contextAccessor = contextAccessor;
-            this.logger = logger;
         }
     }
 }

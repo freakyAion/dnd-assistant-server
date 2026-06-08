@@ -1,295 +1,141 @@
 ﻿using dnd_assistant.DB;
 using dnd_assistant.DTOs;
 using dnd_assistant.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace dnd_assistant.Controllers
 {
-    [ApiController]
-    [Route("api/users")]
-    public class UserController(MyDbContext context, IHttpContextAccessor contextAccessor, ILogger<TemplateController> logger, IPasswordHasher<User> passwordHasher, JWTService jwtService) : TemplateController(context, contextAccessor, logger)
+    [Route("api/[controller]")]
+    public class UsersController(MyDbContext context, JWTService jwtService, ILogger<UsersController> logger)
+        : TemplateController(context, logger)
     {
-        private readonly IPasswordHasher<User> passwordHasher = passwordHasher;
-        private readonly JWTService jwtService = jwtService;
-
-        // TODO (Security):
-        // 1. Enforce HTTPS across the entire API.
-        // 2. Ensure no logs capture raw passwords (request bodies, exceptions, middleware).
-        // 3. Verify that only hashed passwords (PBKDF2 via IPasswordHasher) are stored.
-        // 4. Confirm that no password values are ever returned in responses.
-        // 5. Add password validation rules and rate limiting to reduce automated abuse.
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateUserDTO userDTO)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            LogContext(nameof(Create));
+            LogContext(nameof(Register));
 
-            if (!ModelState.IsValid)
+            if (await _context.Users.AnyAsync(u => u.Email.ToLower() == request.Email.ToLower()))
             {
-                var validationErrors = ModelState
-                    .Where(fieldState => fieldState.Value!.Errors.Count > 0)
-                    .ToDictionary(
-                        fieldState => fieldState.Key,
-                        fieldState => fieldState.Value!.Errors
-                            .Select(error => error.ErrorMessage)
-                            .ToList()
-                    );
-
-                return BadRequest(new
-                {
-                    response = "Validation Error",
-                    errors = validationErrors
-                });
+                return BadRequest(new { message = "Email address is already registered." });
             }
 
-            User? existingUser = await context.Users.FirstOrDefaultAsync(findUser => findUser.Email == userDTO.Email);
-
-            if (existingUser != null) return Conflict(new
+            var user = new User
             {
-                response = "Duplicate Entries"
-            });
-
-            User newUser = new()
-            {
-                Name = userDTO.Name,
-                Email = userDTO.Email,
-                PasswordHash = "",
-                Role = userDTO.Role
+                Name = request.Name,
+                Email = request.Email.ToLower(),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Role = UserRole.Player
             };
 
-            newUser.PasswordHash = passwordHasher.HashPassword(newUser, userDTO.Password);
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
 
-            context.Users.Add(newUser);
-            await context.SaveChangesAsync();
-
-            var returnedUser = new ReturnUserDTO
-            {
-                Name = newUser.Name,
-                Email = newUser.Email,
-                Role = newUser.Role
-            };
-
-            return CreatedAtAction(
-                nameof(Get),
-                new { id = newUser.ID },
-                new
-                {
-                    response = "Success",
-                    user = returnedUser
-                }
-            );
-
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] bool? all, [FromQuery] Guid ID, [FromQuery] string? email, [FromQuery] string? name)
-        {
-            LogContext(nameof(Get));
-
-            if (all == true)
-            {
-                // TODO?: Add a check for credentials
-
-                List<User> users = await context.Users.ToListAsync();
-                List<ReturnUserDTO> returnedUsers = [];
-                foreach (var user in users)
-                {
-                    returnedUsers.Add(new ReturnUserDTO
-                    {
-                        Name = user.Name,
-                        Email = user.Email,
-                        Role = user.Role
-                    });
-                }
-
-                return Ok(new
-                {
-                    response = "Success",
-                    count = returnedUsers.Count,
-                    users = returnedUsers
-                });
-            }
-            else if (ID != Guid.Empty)
-            {
-                User? user = await context.Users.FirstOrDefaultAsync(user => user.ID == ID);
-
-                if (user == null) return NotFound(new
-                {
-                    response = "User not found"
-                });
-
-                ReturnUserDTO returnedUser = new()
-                {
-                    Name = user.Name,
-                    Email = user.Email,
-                    Role = user.Role
-                };
-
-                return Ok(new
-                {
-                    response = "Success",
-                    user = returnedUser
-                });
-            }
-            else if (!string.IsNullOrEmpty(email))
-            {
-                User? user = await context.Users.FirstOrDefaultAsync(user => user.Email == email);
-
-                if (user == null) return NotFound(new
-                {
-                    response = "User not found"
-                });
-
-                ReturnUserDTO returnedUser = new()
-                {
-                    Name = user.Name,
-                    Email = user.Email,
-                    Role = user.Role
-                };
-
-                return Ok(new
-                {
-                    response = "Success",
-                    user = returnedUser
-                });
-            }
-            else if (!string.IsNullOrWhiteSpace(name))
-            {
-                List<User> users = await context.Users
-                    .Where(user => user.Name == name)
-                    .ToListAsync();
-                List<ReturnUserDTO> returnedUsers = [];
-
-                foreach (var user in users)
-                {
-                    returnedUsers.Add(new ReturnUserDTO
-                    {
-                        Name = user.Name,
-                        Email = user.Email,
-                        Role = user.Role
-                    });
-                }
-
-                return Ok(new
-                {
-                    response = "Success",
-                    count = returnedUsers.Count,
-                    users = returnedUsers
-                });
-            }
-            else
-            {
-                return BadRequest(new
-                {
-                    response = "All query parametres are empty"
-                });
-            }
-        }
-
-        [HttpPatch]
-        public IActionResult Edit()
-        {
-            return NotFound();
-        }
-
-        [HttpPut]
-        public IActionResult Replace()
-        {
-            return NotFound();
-        }
-
-        [HttpDelete]
-        public IActionResult Remove()
-        {
-            return NotFound();
+            return Ok(new { message = "Registration successful." });
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO userDTO)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             LogContext(nameof(Login));
 
-            if (!ModelState.IsValid)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower());
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                var validationErrors = ModelState
-                    .Where(fieldState => fieldState.Value!.Errors.Count > 0)
-                    .ToDictionary(
-                        fieldState => fieldState.Key,
-                        fieldState => fieldState.Value!.Errors
-                            .Select(error => error.ErrorMessage)
-                            .ToList()
-                    );
-
-                return BadRequest(new
-                {
-                    response = "Validation Error",
-                    errors = validationErrors
-                });
+                return Unauthorized(new { message = "Invalid email or password." });
             }
 
-            User? user = await context.Users.FirstOrDefaultAsync(findUser => findUser.Email == userDTO.Email);
+            var accessToken = jwtService.GenerateAccessToken(user);
+            var (rawRefresh, hashedRefresh) = jwtService.CreateRefreshToken();
 
-            if (user == null) return Unauthorized(new
+            var refreshTokenEntity = new RefreshToken
             {
-                response = "Wrong email or password"
-            });
-
-            PasswordVerificationResult verificationResult = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, userDTO.Password);
-            if (verificationResult == PasswordVerificationResult.Failed) return Unauthorized(new
-            {
-                response = "Wrong email or password"
-            });
-
-            if (verificationResult == PasswordVerificationResult.SuccessRehashNeeded)
-            {
-                user.PasswordHash = passwordHasher.HashPassword(user, userDTO.Password);
-                user.Touch();
-                context.Users.Update(user);
-            }
-
-            string accessToken = jwtService.GenerateAccessToken(user, length: 15);
-            var (rawRefreshToken, hashedRefreshToken) = jwtService.CreateRefreshToken();
-
-            string? ip = contextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
-
-            var refreshToken = new RefreshToken
-            {
+                TokenHash = hashedRefresh,
                 UserID = user.ID,
-                TokenHash = hashedRefreshToken,
-                IssuedAt = DateTime.UtcNow,
-                Expires = DateTime.UtcNow.AddDays(14),
-                CreatedByIp = ip
+                Expires = DateTime.UtcNow.AddDays(7)
             };
 
-            context.RefreshTokens.Add(refreshToken);
-            await context.SaveChangesAsync();
+            _context.RefreshTokens.Add(refreshTokenEntity);
+            await _context.SaveChangesAsync();
 
+            SetRefreshTokenCookie(rawRefresh);
+
+            return Ok(new AuthResponse(
+                AccessToken: accessToken,
+                RefreshToken: rawRefresh,
+                Name: user.Name,
+                Email: user.Email,
+                Role: user.Role.ToString()
+            ));
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        {
+            LogContext(nameof(Refresh));
+
+            byte[] hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(request.RefreshToken));
+            string incomingHash = Convert.ToBase64String(hashBytes);
+
+            var storedToken = await _context.RefreshTokens
+                .Include(rt => rt.User)
+                .FirstOrDefaultAsync(rt => rt.TokenHash == incomingHash);
+
+            if (storedToken == null || storedToken.Expires < DateTime.UtcNow)
+            {
+                return Unauthorized(new { message = "Invalid or expired refresh token." });
+            }
+
+            var user = storedToken.User;
+            var newAccessToken = jwtService.GenerateAccessToken(user);
+            var (newRawRefresh, newHashedRefresh) = jwtService.CreateRefreshToken();
+
+            storedToken.TokenHash = newHashedRefresh;
+            storedToken.Expires = DateTime.UtcNow.AddDays(7);
+
+            await _context.SaveChangesAsync();
+            SetRefreshTokenCookie(newRawRefresh);
+
+            return Ok(new AuthResponse(
+                AccessToken: newAccessToken,
+                RefreshToken: newRawRefresh,
+                Name: user.Name,
+                Email: user.Email,
+                Role: user.Role.ToString()
+            ));
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] RefreshTokenRequest request)
+        {
+            LogContext(nameof(Logout));
+
+            byte[] hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(request.RefreshToken));
+            string incomingHash = Convert.ToBase64String(hashBytes);
+
+            var storedToken = await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.TokenHash == incomingHash);
+            if (storedToken != null)
+            {
+                _context.RefreshTokens.Remove(storedToken);
+                await _context.SaveChangesAsync();
+            }
+
+            Response.Cookies.Delete("refreshToken");
+            return Ok(new { message = "Logged out successfully." });
+        }
+
+        private void SetRefreshTokenCookie(string token)
+        {
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = refreshToken.Expires,
+                Expires = DateTime.UtcNow.AddDays(7)
             };
-
-            Response.Cookies.Append("refreshToken", rawRefreshToken, cookieOptions);
-
-            var returnedUser = new ReturnUserDTO
-            {
-                Name = user.Name,
-                Email = user.Email,
-                Role = user.Role
-            };
-
-            return Ok(new
-            {
-                response = "Success",
-                accessToken,
-                user = returnedUser
-            });
-
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
     }
 }

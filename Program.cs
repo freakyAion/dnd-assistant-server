@@ -2,14 +2,12 @@ using dnd_assistant.DB;
 using dnd_assistant.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
-// using dnd_assistant.Data;
 
 namespace dnd_assistant
 {
@@ -26,14 +24,12 @@ namespace dnd_assistant
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
-
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddSingleton<JWTService>(sp =>
             {
                 var configuration = sp.GetRequiredService<IConfiguration>();
-
                 return new JWTService(
                     key: configuration["Jwt:Key"]!,
                     issuer: configuration["Jwt:Issuer"]!,
@@ -41,7 +37,10 @@ namespace dnd_assistant
                 );
             });
 
-            builder.Services.AddDbContext<MyDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
+            builder.Services.AddDbContext<MyDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")),
+                ServiceLifetime.Scoped);
+
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
             builder.Services.AddCors(options =>
@@ -61,36 +60,30 @@ namespace dnd_assistant
 
                 .AddPolicy("Self", policy => policy.RequireAssertion(context =>
                 {
-                    var httpContext = (context.Resource as Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext)?.HttpContext ?? context.Resource as HttpContext;
-
-                    if (httpContext == null) return false;
+                    if (context.Resource is not HttpContext httpContext) return false;
 
                     if (!httpContext.Request.RouteValues.TryGetValue("id", out var routeIdObj)) return false;
-
                     string? routeId = routeIdObj?.ToString();
 
-                    var userId = context.User.FindFirstValue("sub") ?? context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var userId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                                 ?? context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                    return routeId != null && userId == routeId;
+                    return !string.IsNullOrEmpty(routeId) && string.Equals(userId, routeId, StringComparison.OrdinalIgnoreCase);
                 }))
 
-                .AddPolicy("AdminOrSelf", policy =>
-                policy.RequireAssertion(context =>
+                .AddPolicy("AdminOrSelf", policy => policy.RequireAssertion(context =>
                 {
                     var role = context.User.FindFirstValue(ClaimTypes.Role);
-                    if (role == "Admin" || role == "Moderator") return true;
+                    if (role == "Admin") return true;
 
-                    var mvcContext = context.Resource as AuthorizationFilterContext;
-                    var httpContext = mvcContext?.HttpContext;
-
-                    if (httpContext == null) return false;
+                    if (context.Resource is not HttpContext httpContext) return false;
 
                     if (!httpContext.Request.RouteValues.TryGetValue("id", out var routeIdObj)) return false;
-
                     string? routeId = routeIdObj?.ToString();
                     if (string.IsNullOrEmpty(routeId)) return false;
 
-                    var userId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sub ?? context.User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    var userId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                                 ?? context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                     return string.Equals(userId, routeId, StringComparison.OrdinalIgnoreCase);
                 }));
@@ -121,7 +114,7 @@ namespace dnd_assistant
             {
                 var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
                 db.Database.Migrate();
-                //ClassSeedData.Seed(db);
+                dnd_assistant.Data.DbSeeder.Seed(db);
             }
 
             app.UseHttpsRedirection();

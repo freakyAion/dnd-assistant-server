@@ -3,6 +3,7 @@ using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using dnd_assistant.DB;
@@ -12,9 +13,11 @@ using dnd_assistant.DB;
 namespace dnd_assistant.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260607092425_ClassesAdded")]
+    partial class ClassesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,22 +26,7 @@ namespace dnd_assistant.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BackgroundBackgroundFeature", b =>
-                {
-                    b.Property<Guid>("BackgroundID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("FeaturesID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("BackgroundID", "FeaturesID");
-
-                    b.HasIndex("FeaturesID");
-
-                    b.ToTable("BackgroundToFeatures", (string)null);
-                });
-
-            modelBuilder.Entity("ClassFeatureClassLevelProgression", b =>
+            modelBuilder.Entity("ClassLevelProgressionFeature", b =>
                 {
                     b.Property<Guid>("FeaturesID")
                         .HasColumnType("uuid");
@@ -66,81 +54,6 @@ namespace dnd_assistant.Migrations
                     b.HasIndex("SpellsID");
 
                     b.ToTable("ClassSpells", (string)null);
-                });
-
-            modelBuilder.Entity("SpeciesSpeciesTrait", b =>
-                {
-                    b.Property<Guid>("SpeciesID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TraitsID")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("SpeciesID", "TraitsID");
-
-                    b.HasIndex("TraitsID");
-
-                    b.ToTable("SpeciesToTraits", (string)null);
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.Background", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<JsonDocument>("Description")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.PrimitiveCollection<int[]>("SkillProficiencies")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Backgrounds");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.BackgroundFeature", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<JsonDocument>("Description")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("BackgroundFeatures", (string)null);
                 });
 
             modelBuilder.Entity("dnd_assistant.Models.Class", b =>
@@ -177,34 +90,6 @@ namespace dnd_assistant.Migrations
                     b.ToTable("Classes");
                 });
 
-            modelBuilder.Entity("dnd_assistant.Models.ClassFeature", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<JsonDocument>("Description")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("ClassFeatures");
-                });
-
             modelBuilder.Entity("dnd_assistant.Models.ClassLevelProgression", b =>
                 {
                     b.Property<Guid>("ID")
@@ -234,6 +119,34 @@ namespace dnd_assistant.Migrations
                         .IsUnique();
 
                     b.ToTable("ClassLevelProgressions");
+                });
+
+            modelBuilder.Entity("dnd_assistant.Models.Feature", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<JsonDocument>("Description")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Features");
                 });
 
             modelBuilder.Entity("dnd_assistant.Models.Item", b =>
@@ -377,106 +290,6 @@ namespace dnd_assistant.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("dnd_assistant.Models.Rule", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<JsonDocument>("Content")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Slug")
-                        .IsUnique();
-
-                    b.ToTable("Rules");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.Species", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("BaseSpeed")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<JsonDocument>("Description")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("Size")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Species");
-                });
-
-            modelBuilder.Entity("dnd_assistant.Models.SpeciesTrait", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<JsonDocument>("Description")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("SpeciesTraits", (string)null);
-                });
-
             modelBuilder.Entity("dnd_assistant.Models.Spell", b =>
                 {
                     b.Property<Guid>("ID")
@@ -595,24 +408,9 @@ namespace dnd_assistant.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("BackgroundBackgroundFeature", b =>
+            modelBuilder.Entity("ClassLevelProgressionFeature", b =>
                 {
-                    b.HasOne("dnd_assistant.Models.Background", null)
-                        .WithMany()
-                        .HasForeignKey("BackgroundID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dnd_assistant.Models.BackgroundFeature", null)
-                        .WithMany()
-                        .HasForeignKey("FeaturesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ClassFeatureClassLevelProgression", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.ClassFeature", null)
+                    b.HasOne("dnd_assistant.Models.Feature", null)
                         .WithMany()
                         .HasForeignKey("FeaturesID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -636,21 +434,6 @@ namespace dnd_assistant.Migrations
                     b.HasOne("dnd_assistant.Models.Spell", null)
                         .WithMany()
                         .HasForeignKey("SpellsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SpeciesSpeciesTrait", b =>
-                {
-                    b.HasOne("dnd_assistant.Models.Species", null)
-                        .WithMany()
-                        .HasForeignKey("SpeciesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dnd_assistant.Models.SpeciesTrait", null)
-                        .WithMany()
-                        .HasForeignKey("TraitsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
