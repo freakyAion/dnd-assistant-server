@@ -97,6 +97,11 @@ namespace dnd_assistant.Models
         [Column(TypeName = "jsonb")]
         public JsonDocument ActiveConditions { get; set; }
 
+        public Guid? CampaignID { get; set; }
+
+        [ForeignKey(nameof(CampaignID))]
+        public Campaign? Campaign { get; set; }
+
         #endregion
 
         #region Proficiencies & Resource Allocations

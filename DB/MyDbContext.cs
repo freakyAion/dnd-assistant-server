@@ -21,6 +21,13 @@ namespace dnd_assistant.DB
         public DbSet<Character> Characters { get; set; }
         public DbSet<CharacterItem> CharacterItems { get; set; }
         public DbSet<CharacterSpell> CharacterSpells { get; set; }
+        public DbSet<World> Worlds { get; set; }
+        public DbSet<Npc> Npcs { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<WorldEvent> WorldEvents { get; set; }
+        public DbSet<Campaign> Campaigns { get; set; }
+        public DbSet<Session> Sessions { get; set; }
+        public DbSet<SessionEvent> SessionEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -133,6 +140,54 @@ namespace dnd_assistant.DB
                 entity.HasOne(cs => cs.Character)
                       .WithMany(c => c.Spells)
                       .HasForeignKey(cs => cs.CharacterID)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
+            modelBuilder.Entity<Campaign>(entity =>
+            {
+                entity.HasMany(c => c.Characters)
+                      .WithOne(ch => ch.Campaign)
+                      .HasForeignKey(ch => ch.CampaignID)
+                      .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<World>(entity =>
+            {
+                entity.HasMany(w => w.Campaigns)
+                      .WithOne(c => c.World)
+                      .HasForeignKey(c => c.WorldID)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(w => w.Npcs)
+                      .WithOne(n => n.World)
+                      .HasForeignKey(n => n.WorldID)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(w => w.Locations)
+                      .WithOne(l => l.World)
+                      .HasForeignKey(l => l.WorldID)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(w => w.HistoricalEvents)
+                      .WithOne(e => e.World)
+                      .HasForeignKey(e => e.WorldID)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Campaign>(entity =>
+            {
+                entity.HasMany(c => c.Sessions)
+                      .WithOne(s => s.Campaign)
+                      .HasForeignKey(s => s.CampaignID)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Session>(entity =>
+            {
+                entity.HasMany(s => s.Logs)
+                      .WithOne(se => se.Session)
+                      .HasForeignKey(se => se.SessionID)
                       .OnDelete(DeleteBehavior.Cascade);
             });
         }

@@ -41,7 +41,8 @@ namespace dnd_assistant.Controllers
                     ClassName = c.Class.Name,
                     SpeciesName = c.Species.Name,
                     c.Level,
-                    c.Alignment
+                    c.Alignment,
+                    c.IsPublic
                 })
                 .OrderBy(c => c.Name)
                 .ToListAsync();
