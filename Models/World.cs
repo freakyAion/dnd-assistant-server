@@ -1,7 +1,7 @@
 ﻿using dnd_assistant.Abstract;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace dnd_assistant.Models
 {
@@ -17,7 +17,7 @@ namespace dnd_assistant.Models
         public User? Owner { get; set; }
 
         [Column(TypeName = "jsonb")]
-        public JsonDocument Description { get; set; } = JsonDocument.Parse("{\"blocks\":[]}");
+        public JsonNode Description { get; set; } = JsonNode.Parse("{\"blocks\":[]}");
 
         public bool IsPublic { get; set; } = false;
 
@@ -25,5 +25,7 @@ namespace dnd_assistant.Models
         public ICollection<Npc> Npcs { get; set; } = new List<Npc>();
         public ICollection<Location> Locations { get; set; } = new List<Location>();
         public ICollection<WorldEvent> HistoricalEvents { get; set; } = new List<WorldEvent>();
+
+        public string MapImageUrl { get; set; } = string.Empty;
     }
 }

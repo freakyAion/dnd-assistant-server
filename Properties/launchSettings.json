@@ -8,17 +8,22 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5132"
+      "applicationUrl": "http://localhost:5132",
+      "nativeDebugging": false
     },
     "https": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_DbgEnableMiniDump": "1",
+        "DOTNET_DbgMiniDumpType": "4",
+        "DOTNET_DbgMiniDumpName": "crash.dmp"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7178;http://localhost:5132"
+      "applicationUrl": "https://localhost:7178;http://localhost:5132",
+      "nativeDebugging": true
     },
     "IIS Express": {
       "commandName": "IISExpress",

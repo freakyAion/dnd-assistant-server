@@ -1,7 +1,7 @@
 ﻿using dnd_assistant.Abstract;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace dnd_assistant.Models
 {
@@ -19,8 +19,11 @@ namespace dnd_assistant.Models
         public string Type { get; set; } = string.Empty;
 
         [Column(TypeName = "jsonb")]
-        public JsonDocument Description { get; set; } = JsonDocument.Parse("{\"blocks\":[]}");
+        public JsonNode Description { get; set; } = JsonNode.Parse("{\"blocks\":[]}");
 
         public Guid? ParentLocationID { get; set; }
+
+        public double? X { get; set; }
+        public double? Y { get; set; }
     }
 }

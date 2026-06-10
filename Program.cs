@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,8 +17,14 @@ namespace dnd_assistant
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
+
+            var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
+            dataSourceBuilder.EnableDynamicJson();
+            var dataSource = dataSourceBuilder.Build();
+
+            builder.Logging.AddConsole();
+            builder.Logging.SetMinimumLevel(LogLevel.Trace);
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
@@ -38,7 +45,8 @@ namespace dnd_assistant
             });
 
             builder.Services.AddDbContext<MyDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")),
+                options.UseNpgsql(dataSource, npgsqlOptions =>
+                    npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
                 ServiceLifetime.Scoped);
 
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -108,6 +116,14 @@ namespace dnd_assistant
                 };
             });
 
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                // Disable limits entirely for testing
+                options.Limits.MaxRequestBodySize = null;
+                options.Limits.MaxRequestLineSize = 128 * 1024;
+                options.Limits.MaxRequestHeadersTotalSize = 128 * 1024;
+            });
+
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
@@ -116,6 +132,16 @@ namespace dnd_assistant
                 db.Database.Migrate();
                 dnd_assistant.Data.DbSeeder.Seed(db);
             }
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.Value?.Contains("UploadImage", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    // This will print to the Output window if the request hits the server
+                    System.Diagnostics.Debug.WriteLine($"DEBUG: Received request at: {context.Request.Path}");
+                }
+                await next();
+            });
 
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
