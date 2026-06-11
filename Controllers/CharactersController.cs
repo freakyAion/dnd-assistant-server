@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using static dnd_assistant.Shared.Enums;
 
 namespace dnd_assistant.Controllers
 {
@@ -279,6 +280,47 @@ namespace dnd_assistant.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id:guid}/core-stats")]
+        public async Task<IActionResult> UpdateCoreStats([FromRoute] Guid id, [FromBody] UpdateCoreStatsDto dto)
+        {
+            LogContext(nameof(UpdateCoreStats));
+
+            var userId = GetCurrentUserId();
+            if (userId == null) return Unauthorized();
+
+            var character = await _context.Characters.FirstOrDefaultAsync(c => c.ID == id);
+            if (character == null) return NotFound();
+
+            if (character.UserID != userId.Value && !User.IsInRole("Admin")) return Forbid();
+
+            var speciesExists = await _context.Species.AnyAsync(s => s.ID == dto.SpeciesID);
+            var backgroundExists = await _context.Backgrounds.AnyAsync(b => b.ID == dto.BackgroundID);
+            var classExists = await _context.Classes.AnyAsync(c => c.ID == dto.ClassID);
+
+            if (!speciesExists || !backgroundExists || !classExists)
+            {
+                return BadRequest("Указанные Раса, Предыстория или Игровой Класс не найдены в справочниках.");
+            }
+
+            character.Name = dto.Name;
+            character.SpeciesID = dto.SpeciesID;
+            character.BackgroundID = dto.BackgroundID;
+            character.ClassID = dto.ClassID;
+            character.Level = dto.Level;
+            character.ExperiencePoints = dto.ExperiencePoints;
+            character.Strength = dto.Strength;
+            character.Dexterity = dto.Dexterity;
+            character.Constitution = dto.Constitution;
+            character.Intelligence = dto.Intelligence;
+            character.Wisdom = dto.Wisdom;
+            character.Charisma = dto.Charisma;
+            character.CurrentSpeedOverride = dto.CurrentSpeedOverride;
+            character.CustomSkillProficiencies = dto.CustomSkillProficiencies ?? new List<Skill>();
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         [HttpPut("{id:guid}/spell-slots")]
         public async Task<IActionResult> UpdateSpellSlots(Guid id, [FromBody] UpdateSpellSlotsDto dto)
         {
@@ -417,6 +459,24 @@ namespace dnd_assistant.Controllers
     public class UpdateVisibilityDto
     {
         public bool IsPublic { get; set; }
+    }
+
+    public class UpdateCoreStatsDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public Guid SpeciesID { get; set; }
+        public Guid BackgroundID { get; set; }
+        public Guid ClassID { get; set; }
+        public int Level { get; set; }
+        public int ExperiencePoints { get; set; }
+        public int Strength { get; set; }
+        public int Dexterity { get; set; }
+        public int Constitution { get; set; }
+        public int Intelligence { get; set; }
+        public int Wisdom { get; set; }
+        public int Charisma { get; set; }
+        public int CurrentSpeedOverride { get; set; }
+        public List<Skill>? CustomSkillProficiencies { get; set; }
     }
 
     #endregion

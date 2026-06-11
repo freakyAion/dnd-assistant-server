@@ -3,6 +3,7 @@ using dnd_assistant.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace dnd_assistant.Controllers
 {
@@ -36,15 +37,78 @@ namespace dnd_assistant.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Create([FromBody] Rule rule)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create([FromBody] UpsertRuleDto dto)
         {
             LogContext(nameof(Create));
+
+            if (await _context.Rules.AnyAsync(r => r.Slug.ToLower() == dto.Slug.ToLower()))
+            {
+                return BadRequest("Правило с таким уникальным Slug уже существует.");
+            }
+
+            var jsonString = dto.Content?.ToString() ?? "{\"blocks\":[]}";
+            using var doc = JsonDocument.Parse(jsonString);
+
+            var rule = new Rule
+            {
+                Title = dto.Title,
+                Slug = dto.Slug.ToLower().Trim(),
+                Category = dto.Category,
+                Content = JsonDocument.Parse(doc.RootElement.GetRawText())
+            };
 
             _context.Rules.Add(rule);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetBySlug), new { slug = rule.Slug }, rule);
         }
+
+        [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpsertRuleDto dto)
+        {
+            LogContext(nameof(Update));
+
+            var rule = await _context.Rules.FirstOrDefaultAsync(r => r.ID == id);
+            if (rule == null) return NotFound();
+
+            if (rule.Slug.ToLower() != dto.Slug.ToLower().Trim() &&
+                await _context.Rules.AnyAsync(r => r.Slug.ToLower() == dto.Slug.ToLower().Trim()))
+            {
+                return BadRequest("Правило с таким уникальным Slug уже существует.");
+            }
+
+            var jsonString = dto.Content?.ToString() ?? "{\"blocks\":[]}";
+            using var doc = JsonDocument.Parse(jsonString);
+
+            rule.Title = dto.Title;
+            rule.Slug = dto.Slug.ToLower().Trim();
+            rule.Category = dto.Category;
+            rule.Content = JsonDocument.Parse(doc.RootElement.GetRawText());
+
+            await _context.SaveChangesAsync();
+            return Ok(rule);
+        }
+
+        [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            LogContext(nameof(Delete));
+
+            var rowsAffected = await _context.Rules.Where(r => r.ID == id).ExecuteDeleteAsync();
+            if (rowsAffected == 0) return NotFound();
+
+            return NoContent();
+        }
+    }
+
+    public class UpsertRuleDto
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Slug { get; set; } = string.Empty;
+        public Rule.RuleCategory Category { get; set; }
+        public System.Text.Json.Nodes.JsonNode? Content { get; set; }
     }
 }

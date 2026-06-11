@@ -17,7 +17,7 @@ namespace dnd_assistant
             [
                 new Claim(JwtRegisteredClaimNames.Sub, user.ID.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, roleString),
+                new Claim("role", roleString),
                 new Claim("name", user.Name)
             ];
 

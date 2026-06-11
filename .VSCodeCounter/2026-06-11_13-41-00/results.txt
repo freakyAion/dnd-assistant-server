@@ -1,0 +1,105 @@
+Date : 2026-06-11 13:41:00
+Directory : d:\VisualStudio\Projects\dnd-assistant
+Total : 63 files,  10124 codes, 54 comments, 2998 blanks, all 13176 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C#       |         58 |     10,029 |         54 |      2,991 |     13,074 |
+| JSON     |          3 |         71 |          0 |          2 |         73 |
+| XML      |          1 |         23 |          0 |          5 |         28 |
+| Markdown |          1 |          1 |          0 |          0 |          1 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                    | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                       |         63 |     10,124 |         54 |      2,998 |     13,176 |
+| . (Files)                                                                                               |          6 |        225 |          2 |         45 |        272 |
+| Abstract                                                                                                |          1 |         26 |          0 |          7 |         33 |
+| Controllers                                                                                             |         12 |      1,705 |          5 |        340 |      2,050 |
+| DB                                                                                                      |          1 |        200 |          0 |         32 |        232 |
+| DTOs                                                                                                    |          1 |         34 |          0 |          7 |         41 |
+| Data                                                                                                    |          1 |        213 |          6 |         20 |        239 |
+| Data\Seeding                                                                                            |          1 |        213 |          6 |         20 |        239 |
+| Migrations                                                                                              |         17 |      6,944 |         41 |      2,365 |      9,350 |
+| Models                                                                                                  |         22 |        687 |          0 |        179 |        866 |
+| Models (Files)                                                                                          |         15 |        543 |          0 |        150 |        693 |
+| Models\Backgrounds                                                                                      |          2 |         35 |          0 |          6 |         41 |
+| Models\Classes                                                                                          |          3 |         67 |          0 |         15 |         82 |
+| Models\Species                                                                                          |          2 |         42 |          0 |          8 |         50 |
+| Properties                                                                                              |          1 |         46 |          0 |          0 |         46 |
+| Shared                                                                                                  |          1 |         44 |          0 |          3 |         47 |
++---------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| d:\VisualStudio\Projects\dnd-assistant\Abstract\Entities.cs                                             | C#       |         26 |          0 |          7 |         33 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\CampaignsController.cs                               | C#       |        145 |          0 |         31 |        176 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\CharacterOptionsController.cs                        | C#       |        152 |          0 |         32 |        184 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\CharactersController.cs                              | C#       |        403 |          0 |         80 |        483 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\ClassesController.cs                                 | C#       |         83 |          1 |         19 |        103 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\ImagesController.cs                                  | C#       |         28 |          0 |          6 |         34 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\ItemsController.cs                                   | C#       |        140 |          0 |         21 |        161 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\RulesController.cs                                   | C#       |         91 |          0 |         23 |        114 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\ServerStatusController.cs                            | C#       |         17 |          0 |          2 |         19 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\SpellsController.cs                                  | C#       |        117 |          1 |         14 |        132 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\TemplateController.cs                                | C#       |         29 |          2 |          6 |         37 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\UserController.cs                                    | C#       |        116 |          0 |         25 |        141 |
+| d:\VisualStudio\Projects\dnd-assistant\Controllers\WorldsController.cs                                  | C#       |        384 |          1 |         81 |        466 |
+| d:\VisualStudio\Projects\dnd-assistant\DB\MyDbContext.cs                                                | C#       |        200 |          0 |         32 |        232 |
+| d:\VisualStudio\Projects\dnd-assistant\DTOs\AuthDTOs.cs                                                 | C#       |         34 |          0 |          7 |         41 |
+| d:\VisualStudio\Projects\dnd-assistant\Data\Seeding\DbSeeder.cs                                         | C#       |        213 |          6 |         20 |        239 |
+| d:\VisualStudio\Projects\dnd-assistant\JWTService.cs                                                    | C#       |         43 |          0 |          9 |         52 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260607091619_InitialCreate.Designer.cs              | C#       |        211 |          2 |         79 |        292 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260607091619_InitialCreate.cs                       | C#       |        146 |          3 |         14 |        163 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260607092425_ClassesAdded.Designer.cs               | C#       |        341 |          2 |        128 |        471 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260607092425_ClassesAdded.cs                        | C#       |        199 |          3 |         29 |        231 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260607093956_RulesAdded.Designer.cs                 | C#       |        499 |          2 |        186 |        687 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260607093956_RulesAdded.cs                          | C#       |        245 |          3 |         33 |        281 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260608065921_AddBackgroundProficiencies.Designer.cs | C#       |        502 |          2 |        187 |        691 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260608065921_AddBackgroundProficiencies.cs          | C#       |         23 |          3 |          4 |         30 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260608122846_CharacterEngine.Designer.cs            | C#       |        694 |          2 |        265 |        961 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260608122846_CharacterEngine.cs                     | C#       |        175 |          3 |         16 |        194 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260608172836_isPublic.Designer.cs                   | C#       |        696 |          2 |        266 |        964 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260608172836_isPublic.cs                            | C#       |         23 |          3 |          4 |         30 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260609064903_AddWorldsAndCampaigns.Designer.cs      | C#       |        962 |          2 |        370 |      1,334 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260609064903_AddWorldsAndCampaigns.cs               | C#       |        253 |          3 |         30 |        286 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260609104643_LocationsXY.Designer.cs                | C#       |        969 |          2 |        373 |      1,344 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\20260609104643_LocationsXY.cs                         | C#       |         39 |          3 |          8 |         50 |
+| d:\VisualStudio\Projects\dnd-assistant\Migrations\MyDbContextModelSnapshot.cs                           | C#       |        967 |          1 |        373 |      1,341 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Backgrounds\Background.cs                                 | C#       |         19 |          0 |          4 |         23 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Backgrounds\BackgroundFeature.cs                          | C#       |         16 |          0 |          2 |         18 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Campaign.cs                                               | C#       |         23 |          0 |          7 |         30 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Character.cs                                              | C#       |         82 |          0 |         38 |        120 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\CharacterItem.cs                                          | C#       |         21 |          0 |          7 |         28 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\CharacterSpell.cs                                         | C#       |         19 |          0 |          6 |         25 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Classes\Class.cs                                          | C#       |         31 |          0 |          6 |         37 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Classes\ClassFeature.cs                                   | C#       |         17 |          0 |          3 |         20 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Classes\ClassLevelProgression.cs                          | C#       |         19 |          0 |          6 |         25 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Item.cs                                                   | C#       |         95 |          0 |         15 |        110 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Location.cs                                               | C#       |         22 |          0 |          7 |         29 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\NPC.cs                                                    | C#       |         22 |          0 |          6 |         28 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\RefreshTokens.cs                                          | C#       |         37 |          0 |         12 |         49 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Rule.cs                                                   | C#       |         27 |          0 |          5 |         32 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Session.cs                                                | C#       |         19 |          0 |          5 |         24 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\SessionEvent.cs                                           | C#       |         17 |          0 |          5 |         22 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Species\Species.cs                                        | C#       |         26 |          0 |          6 |         32 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Species\SpeciesTrait.cs                                   | C#       |         16 |          0 |          2 |         18 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\Spell.cs                                                  | C#       |         87 |          0 |         17 |        104 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\User.cs                                                   | C#       |         29 |          0 |          8 |         37 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\World.cs                                                  | C#       |         24 |          0 |          7 |         31 |
+| d:\VisualStudio\Projects\dnd-assistant\Models\WorldEvent.cs                                             | C#       |         19 |          0 |          5 |         24 |
+| d:\VisualStudio\Projects\dnd-assistant\Program.cs                                                       | C#       |        133 |          2 |         29 |        164 |
+| d:\VisualStudio\Projects\dnd-assistant\Properties\launchSettings.json                                   | JSON     |         46 |          0 |          0 |         46 |
+| d:\VisualStudio\Projects\dnd-assistant\README.md                                                        | Markdown |          1 |          0 |          0 |          1 |
+| d:\VisualStudio\Projects\dnd-assistant\Shared\Enums.cs                                                  | C#       |         44 |          0 |          3 |         47 |
+| d:\VisualStudio\Projects\dnd-assistant\appsettings.Development.json                                     | JSON     |          8 |          0 |          1 |          9 |
+| d:\VisualStudio\Projects\dnd-assistant\appsettings.json                                                 | JSON     |         17 |          0 |          1 |         18 |
+| d:\VisualStudio\Projects\dnd-assistant\dnd-assistant.csproj                                             | XML      |         23 |          0 |          5 |         28 |
+| Total                                                                                                   |          |     10,124 |         54 |      2,998 |     13,176 |
++---------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
