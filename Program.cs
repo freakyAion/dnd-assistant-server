@@ -118,7 +118,6 @@ namespace dnd_assistant
 
             builder.WebHost.ConfigureKestrel(options =>
             {
-                // Disable limits entirely for testing
                 options.Limits.MaxRequestBodySize = null;
                 options.Limits.MaxRequestLineSize = 128 * 1024;
                 options.Limits.MaxRequestHeadersTotalSize = 128 * 1024;

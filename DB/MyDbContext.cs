@@ -175,14 +175,6 @@ namespace dnd_assistant.DB
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<Campaign>(entity =>
-            {
-                entity.HasMany(c => c.Sessions)
-                      .WithOne(s => s.Campaign)
-                      .HasForeignKey(s => s.CampaignID)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
             modelBuilder.Entity<Session>(entity =>
             {
                 entity.HasMany(s => s.Logs)
